@@ -6,31 +6,48 @@ const Event = mongoose.model(
       type: String,
       required: true
     },
-    desription: {
+    description: {
       type: String,
       required: true
     },
     creator: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User"
-    },
-    group: {
-      type: mongoose.Schema.Types.ObjectId,
       ref: "Group"
     },
+    date: {
+      type: Date,
+      default: Date.now,
+    },
+    enabled: {
+      type: Boolean,
+      default: false
+    },
+    groups: [{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Group"
+    }],
     comments: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Comment"
       }
     ],
-    reminderTime: {
-      type: Date
+    recurring: {
+      type: Boolean,
+      default: false
     },
-    date: {
+    reminderTime: {
       type: Date,
-      default: Date.now,
-    }
+      default: Date.now()
+    },
+    repeat: {
+      type: String,
+      default: "yearly"
+    },
+    restricted: Boolean,
+    wasSent: Boolean
+    // This idea but for repetitive alerts.
   })
 );
+
 module.exports = Event;

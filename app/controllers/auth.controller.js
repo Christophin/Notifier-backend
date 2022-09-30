@@ -1,4 +1,3 @@
-const config = require("../config/auth.config");
 const db = require("../models");
 const User = db.user;
 const Role = db.role;
@@ -44,6 +43,7 @@ exports.signup = async(req, res) => {
 
 };
 exports.signin = async(req, res, next) => {
+  console.log("sign in", req.body);
   try {
     const user = await User.findOne({
       username: req.body.username
@@ -69,7 +69,7 @@ exports.signin = async(req, res, next) => {
       console.log("user banned", user)
       res.status(403).send({ message: "User had been banned"})
     }
-    const token = jsonwebtoken.sign({ id: user._id}, config.secret, {
+    const token = jsonwebtoken.sign({ id: user._id}, process.env.SECRET, {
       expiresIn: 86400 // 24 hours
     })
     res.cookie('token', token, { httpOnly: true });

@@ -17,7 +17,7 @@ exports.allGroupsById = async(req, res) => {
 
 exports.groupById = async(req, res) => {
   try {
-    const group = await Group.findById(req.params.id)
+    const group = await Group.findById(req.params.groupId)
       .populate('creator')
       .populate('members')
       .populate('leads')
@@ -61,7 +61,7 @@ exports.addMemberToGroup = async(req, res) => {
     const user = await User.findOne().where("username").equals(req.body.username)
     if(!user) throw Error("user not found!")
 
-    const group = await Group.findById(req.params.id)
+    const group = await Group.findById(req.params.groupId)
     if(!group) throw Error("Group not found!")
 
     let alreadyMember = false
@@ -92,7 +92,7 @@ exports.removeMember = async(req, res) => {
     const user = await User.findById(req.body.id)
     if(!user) throw Error("User not found!")
 
-    const group = await Group.findById(req.params.id)
+    const group = await Group.findById(req.params.groupId)
     if(!group) throw Error("Group not found!")
 
     let isMember = false
@@ -122,7 +122,7 @@ exports.addLead = async(req, res) => {
     const user = await User.findById(req.body.id)
     if(!user) throw Error("something went wrong with finding the user")
 
-    const group = await Group.findById(req.params.id)
+    const group = await Group.findById(req.params.groupId)
     if(!group) throw Error("Something went wrong finding the group")
 
     let isMember = false
@@ -156,7 +156,7 @@ exports.removeLead = async(req, res) => {
     const user = await User.findById(req.body.id)
     if(!user) throw Error("User not found!")
 
-    const group = await Group.findById(req.params.id)
+    const group = await Group.findById(req.params.groupId)
     if(!group) throw Error("Group not found!")
 
     let isLead = false
@@ -182,7 +182,7 @@ exports.addAdmin = async(req, res) => {
     const user = await User.findById(req.body.id)
     if(!user) throw Error("User not found!")
 
-    const group = await Group.findById(req.params.id)
+    const group = await Group.findById(req.params.groupId)
     if(!group) throw Error("Group not found!")
 
     let isMember = false
@@ -220,7 +220,7 @@ exports.removeAdmin = async(req, res) => {
     console.log("user vs user", String(user.id) === req.userId);
     if(String(user.id) === req.userId) throw Error("you cannot remove yourself as admin.")
 
-    const group = await Group.findById(req.params.id)
+    const group = await Group.findById(req.params.groupId)
     if(!group) throw Error("Group not found")
 
     let isAdmin = false

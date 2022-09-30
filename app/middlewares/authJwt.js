@@ -1,16 +1,16 @@
 const jwt = require("jsonwebtoken");
-const config = require("../config/auth.config.js");
 const db = require("../models");
 const User = db.user;
 const Role = db.role;
-const Group = db.group
+const Group = db.group;
+const Event = db.event;
 
 verifyToken = (req, res, next) => {
   let token = req.cookies.token;
   if (!token) {
     return res.status(403).send({ message: "No token provided!" });
   }
-  jwt.verify(token, config.secret, (err, decoded) => {
+  jwt.verify(token, process.env.SECRET, (err, decoded) => {
     if (err) {
       return res.status(401).send({ message: "Unauthorized!" });
     }
@@ -45,7 +45,6 @@ isModerator = async(req, res, next) => {
       role.name === "moderator"
     })
     if(moderator) {
-      console.log("Found moderator")
       next()
       return
     }
@@ -55,15 +54,12 @@ isModerator = async(req, res, next) => {
   }
 };
 isGroupAdmin = async(req, res, next) => {
-  console.log("inside group admin")
   try {
-    const group = await Group.findById(req.params.id)
+    const group = await Group.findById(req.params.groupId)
     if(!group) throw Error("Group not found!")
     const filteredAdmin = group.admins.filter(admin => {
-      console.log("filering admins", String(admin) === req.userId)
       return String(admin) === req.userId
     })
-    console.log("admin", filteredAdmin)
     if(filteredAdmin.length > 0) {
       console.log("found admin");
       next()
@@ -72,12 +68,47 @@ isGroupAdmin = async(req, res, next) => {
     res.status(403).send({ message: "Requires group admin role!"})
   } catch(err) {
     console.log("err", err);
+    res.status(500).json({ message: err})
   }
 };
+isGroupLead = async(req, res, next) => {
+  try {
+    const group = await Group.findById(req.params.groupId)
+    if(!group) throw Error("group not found in isGroupLead")
+    const filteredLead = group.leads.filter(lead => {
+      return String(lead) === req.userId
+    })
+    if(filteredLead.length > 0) {
+      next()
+      return
+    }
+    res.status(403).send({ message: "Requires group lead role!"})
+  } catch(err) {
+    console.log("err in islead", err)
+    res.status(500).json({ message: err })
+  }
+};
+isEventCreator = async(req, res, next) => {
+  try {
+    const singleEvent = await Event.findById(req.params.eventId)
+    if(!singleEvent) throw Error("event not found in is event creator")
+    if(String(singleEvent.creator) === req.params.groupId) {
+      next()
+      return;
+    } else {
+      res.status(403).send({ message: "This group is not the creator of the Event"})
+    }
+  } catch(err) {
+    console.log("err in is event creator", err);
+    res.status(500).json({ message: err })
+  }
+}
 const authJwt = {
   verifyToken,
   isAdmin,
   isModerator,
-  isGroupAdmin
+  isGroupAdmin,
+  isGroupLead,
+  isEventCreator
 };
 module.exports = authJwt;

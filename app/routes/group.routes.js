@@ -10,12 +10,12 @@ module.exports = function(app) {
     next();
   });
   app.get("/api/group/user/:id",[authJwt.verifyToken], controller.allGroupsById);
-  app.get("/api/group/:id", [authJwt.verifyToken], controller.groupById)
+  app.get("/api/group/:groupId", [authJwt.verifyToken], controller.groupById)
   app.post("/api/group", [authJwt.verifyToken], controller.newGroup)
-  app.put("/api/group/member/:id", [authJwt.verifyToken, authJwt.isGroupAdmin], controller.addMemberToGroup)
-  app.put("/api/group/member/remove/:id", [authJwt.verifyToken, authJwt.isGroupAdmin], controller.removeMember)
-  app.put("/api/group/lead/:id", [authJwt.verifyToken, authJwt.isGroupAdmin], controller.addLead)
-  app.put("/api/group/lead/remove/:id", [authJwt.verifyToken, authJwt.isGroupAdmin], controller.removeLead)
-  app.put("/api/group/admin/:id", [ authJwt.verifyToken, authJwt.isGroupAdmin], controller.addAdmin)
-  app.put("/api/group/admin/remove/:id", [authJwt.verifyToken, authJwt.isGroupAdmin], controller.removeAdmin)
+  app.put("/api/group/member/:groupId", [authJwt.verifyToken, authJwt.isGroupAdmin], controller.addMemberToGroup)
+  app.put("/api/group/member/remove/:groupId", [authJwt.verifyToken, authJwt.isGroupAdmin], controller.removeMember)
+  app.put("/api/group/lead/:groupId", [authJwt.verifyToken, authJwt.isGroupAdmin], controller.addLead)
+  app.put("/api/group/lead/remove/:groupId", [authJwt.verifyToken, authJwt.isGroupAdmin], controller.removeLead)
+  app.put("/api/group/admin/:groupId", [ authJwt.verifyToken, authJwt.isGroupAdmin], controller.addAdmin)
+  app.put("/api/group/admin/remove/:groupId", [authJwt.verifyToken, authJwt.isGroupAdmin], controller.removeAdmin)
 };
