@@ -68,15 +68,7 @@ async function processEventTimes(date) {
     console.log("matching after filter" , matchingEvents);
     if(matchingEvents.length > 0) {
       console.log("inside matching events!!!!", matchingEvents);
-      for(let i = 0; i < matchingEvents.length; i++) {
-        const groups = await Group.find({ events: matchingEvents[i]._id })
-          .populate('members')
-        if(!groups) throw Error("No groups attachted to event")
-        console.log("groups", groups);
-        for(let j = 0; j < groups.length; j++) {
-          console.log("group members", groups[j].members, groups[j].members);
-        }
-      }
+      //const groups = await Group.find({  })
     }
   } catch(err) {
     console.log("error in finding the events", err);
